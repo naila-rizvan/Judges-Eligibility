@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}Eligibility Check{% endblock %}
+{% block content %}
+<h2 class="mb-4">Eligibility Check</h2>
+
+{% if meta %}
+    <div class="alert alert-info">
+        Data as of: {{ meta['uploaded_at_formatted'] }}
+    </div>
+{% else %}
+    <div class="alert alert-warning">
+        <strong>No master data uploaded yet.</strong>
+    </div>
+{% endif %}
+
+<form method="POST" action="{{ url_for('check_post') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="mb-3">
+        <label class="form-label">Judge Member ID</label>
+        <input name="judge_id" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Contestant Member IDs (comma or newline separated)</label>
+        <textarea name="contestant_ids" rows="6" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Check Eligibility</button>
+</form>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Home – Judges Eligibility Checker{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <div class="card shadow-lg mx-auto" style="max-width: 900px; border-radius: 12px;">
+        <div class="card-body p-5 text-center">
+
+            <h1 class="text-primary mb-4">Toastmasters Judges Eligibility Checker</h1>
+
+            <p class="lead mb-4">
+                Welcome to the Toastmasters Judges Eligibility Checker!  
+                This web application helps Contest Managers at Division and District levels to
+                automatically determine whether a judge is eligible to judge contestants based on
+                the latest verified membership data.
+            </p>
+
+            <p class="mb-4">
+                Admins can upload the master membership file, and Contest Managers or members can quickly
+                check judge eligibility. This eliminates manual verification, prevents errors, and ensures
+                compliance with Toastmasters International contest rules.
+            </p>
+
+            <div class="mt-4">
+
+                {% if session.logged_in %}
+                    <a href="{{ url_for('upload_page') }}" class="btn btn-primary mx-2">
+                        Upload Master CSV
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-primary mx-2">
+                        Admin Login
+                    </a>
+                {% endif %}
+
+                <a href="{{ url_for('check_page') }}" class="btn btn-success mx-2">
+                    Check Eligibility
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer with large top margin -->
+    <footer class="text-center text-muted mt-5 mb-3" style="margin-top: 80px !important;">
+        <small>This is a Distinguished Toastmaster Project by <strong>Naila Rizvan</strong></small>
+    </footer>
+
+</div>
+{% endblock %}

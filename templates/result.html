@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Eligibility Results{% endblock %}
+{% block content %}
+<h2 class="mb-4">Eligibility Results</h2>
+
+<p><strong>Judge:</strong> {{ judge_name }} (ID: {{ judge_id }})</p>
+{% if meta %}
+<p><strong>Data checked as of:</strong> {{ meta['uploaded_at_formatted'] }}</p>
+{% endif %}
+
+<table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Contestant ID</th>
+            <th>Contestant Name</th>
+            <th>Common Clubs (Number – Name)</th>
+            <th>Eligibility</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in results %}
+        <tr>
+            <td>{{ r.contestant_id }}</td>
+            <td>{{ r.contestant_name }}</td>
+            <td>
+                {% if r.common_clubs %}
+                    <ul>
+                        {% for club_num, club_name in r.common_clubs %}
+                            <li>{{ club_num }} – {{ club_name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                {% if r.eligible %}
+                    <span class="text-success">✅ Eligible</span>
+                {% else %}
+                    <span class="text-danger">❌ Not Eligible</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ url_for('check_page') }}" class="btn btn-secondary mt-3">Back</a>
+{% if session.logged_in %}
+<a href="{{ url_for('upload_page') }}" class="btn btn-secondary mt-3 ms-2">Upload CSV</a>
+{% endif %}
+{% endblock %}
