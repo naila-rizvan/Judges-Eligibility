@@ -2,23 +2,22 @@
 
 PRAGMA foreign_keys = ON;
 
--- table that stores each membership row; each row = one member in one club
+-- Table for membership records
 CREATE TABLE IF NOT EXISTS memberships (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    member_id TEXT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    member_id TEXT,
+    club_number TEXT,
+    club_name TEXT,
     first_name TEXT,
     middle_name TEXT,
     last_name TEXT,
-    email TEXT,
-    phone TEXT,
-    club_number TEXT NOT NULL,
-    club_name TEXT,
-    uploaded_at TEXT NOT NULL  -- ISO date of the upload that added this row
+    uploaded_at DATE
 );
 
--- a simple table to track latest upload timestamp and filename
+-- Table to track uploaded files
 CREATE TABLE IF NOT EXISTS uploads_meta (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     filename TEXT,
-    uploaded_at TEXT
+    storage_path TEXT,
+    uploaded_at DATE
 );

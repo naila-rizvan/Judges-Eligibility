@@ -124,7 +124,7 @@ def check_eligibility_single_judge(judge_id, contestant_id, cur):
 
     return common
 
-
+# -------------------- DATA GENERATED DATE FUNCTION -------------------- #
 def extract_generated_date(csv_text):
     """
     Expects first line like:
@@ -135,15 +135,22 @@ def extract_generated_date(csv_text):
     if not lines:
         return date.today()
 
-    first_line = lines[0].strip()
+    # Parse first row as CSV
+    first_row = next(csv.reader([lines[0]]))
+    first_line = ",".join(first_row)
 
-    if not first_line.lower().startswith("date generated"):
-        return date.today()
+    first_line = (
+        first_line
+        .replace("\ufeff", "")
+        .strip()
+        .strip('"')
+    )
 
     try:
-        date_part = first_line.split(":", 1)[1].strip()
+        date_part = first_line.replace("Date Generated:", "").strip()
         return datetime.strptime(date_part, "%B %d, %Y").date()
-    except Exception:
+    except Exception as e:
+        print(e)
         return date.today()
     
 
@@ -196,7 +203,7 @@ def upload_page():
 
     if meta:
         meta["uploaded_at_formatted"] = meta["uploaded_at"].strftime(
-            "%d %b %Y, %H:%M UTC"
+            "%d %b %Y"
         )
 
     csrf_token = generate_csrf()
