@@ -3,6 +3,43 @@
 {% block content %}
 <h2 class="mb-4">Admin Upload Master CSV</h2>
 
+<div class="alert alert-warning">
+    <h5 class="mb-2">📌 Important Upload Instructions</h5>
+    <ul class="mb-0">
+        <li>
+            Please upload the CSV file <strong>exactly as downloaded from the TI website</strong>.
+            Do <strong>not</strong> modify, edit, rename columns, or remove rows.
+        </li>
+        <li>
+            Any manual changes may affect eligibility validation accuracy.
+        </li>
+    </ul>
+</div>
+
+<div class="alert alert-secondary">
+    <h5 class="mb-2">📄 Expected File Format</h5>
+    <ul class="mb-0">
+        <li>
+            <strong>Row 1:</strong> File generation date in the format:
+            <code>Date Generated: December 16, 2025</code>
+        </li>
+        <li>
+            <strong>Row 2:</strong> Column headers
+        </li>
+        <li>
+            <strong>Row 3 onwards:</strong> Member data
+        </li>
+    </ul>
+
+    <hr class="my-2">
+
+    <p class="mb-1"><strong>Required Headers:</strong></p>
+    <code>
+        Member ID, Club ID, Club Name, First Name, Middle Name, Last Name
+    </code>
+</div>
+
+
 {% if meta %}
     <div class="alert alert-info">
         <p><strong>Last uploaded file:</strong> {{ meta['filename'] }}</p>
@@ -16,6 +53,9 @@
     </div>
 {% endif %}
 
+<div id="fileError" class="alert alert-danger d-none"></div>
+
+
 <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_csv') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <div class="mb-3">
@@ -25,4 +65,83 @@
 </form>
 
 <a href="{{ url_for('check_page') }}" class="btn btn-secondary mt-3">Go to Eligibility Check</a>
+
+
+<hr class="mt-4">
+
+<p class="text-muted small text-center">
+    For any questions, feedback, or suggestions, please contact
+    <a href="mailto:naila.rizvan@gmail.com">naila.rizvan@gmail.com</a>
+</p>
+
+
+<script>
+document.querySelector("form").addEventListener("submit", function (e) {
+    const fileInput = document.querySelector('input[type="file"]');
+    const errorDiv = document.getElementById("fileError");
+
+    errorDiv.classList.add("d-none");
+    errorDiv.innerText = "";
+
+    if (!fileInput.files.length) {
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+        const text = event.target.result;
+        const lines = text.split(/\r?\n/);
+
+        // --- Validate first row ---
+        if (!lines[0] || !lines[0].toLowerCase().includes("date generated")) {
+            showError("❌ Invalid file format. First row must contain 'Date Generated'.");
+            e.preventDefault();
+            return;
+        }
+
+        // --- Validate second row headers ---
+        const expectedHeaders = [
+            "member id",
+            "club id",
+            "club name",
+            "first name",
+            "middle name",
+            "last name"
+        ];
+
+        const actualHeaders = lines[1]
+            .replace(/"/g, "")
+            .toLowerCase()
+            .split(",")
+            .map(h => h.trim());
+
+        for (let header of expectedHeaders) {
+            if (!actualHeaders.includes(header)) {
+                showError(
+                    "❌ Invalid file headers. Please upload the file exactly as downloaded from the TI website."
+                );
+                e.preventDefault();
+                return;
+            }
+        }
+
+        // All checks passed → submit form
+        e.target.submit();
+    };
+
+    reader.readAsText(file);
+
+    function showError(message) {
+        errorDiv.innerText = message;
+        errorDiv.classList.remove("d-none");
+    }
+
+    // Prevent normal submit until validation finishes
+    e.preventDefault();
+});
+</script>
+
+
 {% endblock %}

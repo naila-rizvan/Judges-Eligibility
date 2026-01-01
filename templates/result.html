@@ -14,7 +14,7 @@
             <th>Contestant ID</th>
             <th>Contestant Name</th>
             <th>Common Clubs (Number – Name)</th>
-            <th>Eligibility</th>
+            <th>Judge Eligibility</th>
         </tr>
     </thead>
     <tbody>
@@ -49,4 +49,12 @@
 {% if session.logged_in %}
 <a href="{{ url_for('upload_page') }}" class="btn btn-secondary mt-3 ms-2">Upload CSV</a>
 {% endif %}
+
+<hr class="mt-4">
+
+<p class="text-muted small text-center">
+    For any questions, feedback, or suggestions, please contact
+    <a href="mailto:naila.rizvan@gmail.com">naila.rizvan@gmail.com</a>
+</p>
+
 {% endblock %}

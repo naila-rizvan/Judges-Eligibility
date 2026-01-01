@@ -13,6 +13,13 @@
     </div>
 {% endif %}
 
+<div class="alert alert-secondary small">
+    <strong>Input Format:</strong><br>
+    Please enter Member IDs in <strong>numeric format only</strong> (e.g., <code>1234567</code>).  
+    Do <strong>not</strong> include the <code>PN-</code> prefix.
+</div>
+
+
 <form method="POST" action="{{ url_for('check_post') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <div class="mb-3">
@@ -25,4 +32,13 @@
     </div>
     <button type="submit" class="btn btn-primary">Check Eligibility</button>
 </form>
+
+<hr class="mt-4">
+
+<p class="text-muted small text-center">
+    For any questions, feedback, or suggestions, please contact
+    <a href="mailto:naila.rizvan@gmail.com">naila.rizvan@gmail.com</a>
+</p>
+
+
 {% endblock %}
